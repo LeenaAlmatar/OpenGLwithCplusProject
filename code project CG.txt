@@ -1,0 +1,278 @@
+#include<windows.h>
+#include<glut.h>
+
+GLfloat x = 0.0f;
+GLfloat y = 0.0f;
+GLfloat z = 0.0f;
+
+GLfloat var1 = 0.0f;
+GLfloat var2 = 0.0f;
+
+void backG() {
+
+    int numSprinkles = 500; // Set the number of sprinkles
+    glPushMatrix();
+    for (int i = 0; i < numSprinkles; i++)
+    {
+        // Generate random coordinates for each sprinkle
+        int t = rand() % 100 - 50;
+        int n = rand() % 100 - 50;
+        int l = rand() % 100 - 50;
+
+        // Generate random color for each sprinkle
+        float r = (float)rand() / RAND_MAX;
+        float g = (float)rand() / RAND_MAX;
+        float b = (float)rand() / RAND_MAX;
+
+        // Draw the sprinkle as a small square with the random color
+        glBegin(GL_QUADS);
+        glColor3f(r, g, b);
+        glVertex3f(t, n, l);
+        glVertex3f(t + 0.5, n, l);
+        glVertex3f(t + 0.5, n + 0.5, l);
+        glVertex3f(t, n + 0.5, l);
+        glEnd();
+
+        glPopMatrix();
+
+    }
+
+    glFlush();
+
+}
+
+void display(void)
+{
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the screen
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_COLOR_MATERIAL);
+    glShadeModel(GL_SMOOTH); // Set the shading model to smooth
+
+
+    backG(); //call the background method
+
+    //--------------------------------------------------
+    glPushMatrix();
+    glTranslated(0, var2, 0); //to animate the whole object
+
+    GLfloat pos[] = { 30,100,0,0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
+
+    //Draw icecream1
+    glPushMatrix();
+    glColor3f(0.9, 0.5, 0.6);
+    glTranslated(29.5, 27.3, 0);
+    glutSolidSphere(3, 50, 30);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0.7, 0.5, 0.4);
+    glTranslated(30, 25, 0);
+    glRotated(59, 1, 0, 0);
+    glutSolidCone(3, 11, 30, 20);
+    glPopMatrix();
+
+
+    //Draw icecream2
+    glPushMatrix();
+    glColor3f(1, 1, 0);
+    glTranslated(-28.8, -20, 0);
+    glutSolidSphere(3, 50, 30);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0.7, 0.5, 0.4);
+    glTranslated(-29, -22, 0);
+    glRotated(55, 1, 0, 0);
+    glutSolidCone(3, 10, 30, 20);
+    glPopMatrix();
+
+
+    //--------------------------------------------------
+    //body
+    glColor3f(0.7, 0.7, 0.9);
+    glPushMatrix();
+    glutSolidTorus(10, 15, 15, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1, 0.8, 0.9);
+    glutSolidTorus(6, 18, 5, 10);
+    glPopMatrix();
+
+    //left eye
+    glColor3f(1, 1, 1);
+    glPushMatrix();
+    glTranslatef(x - 9, y + 14, 6);
+    glutSolidSphere(4.6, 20, 15);
+    glPopMatrix();
+
+    //right eye
+    glColor3f(1, 1, 1);
+    glPushMatrix();
+    glTranslatef(x + 4, y + 14, 6);
+    glutSolidSphere(4.6, 20, 15);
+    glPopMatrix();
+
+    //left eye pupil
+    glColor3f(0, 0, 0);
+    glPushMatrix();
+    glTranslatef(var1, 0, 0);
+    glTranslatef(x - 12, y + 15, 6);
+    glutSolidSphere(2, 20, 10);
+    glPopMatrix();
+
+
+    //right eye pupil
+    glColor3f(0, 0, 0);
+    glPushMatrix();
+    glTranslatef(var1, 0, 0);
+    glTranslatef(x + 2, y + 15, 6);
+    glutSolidSphere(2, 20, 10);
+    glPopMatrix();
+
+    //Set the animation on the eyes
+    if (var1 > 2)
+        var1 = 0;
+    else
+        var1 += 0.002;
+
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
+
+    //left cheek
+    glColor3f(1, 0.6, 0.7);
+    glPushMatrix();
+    glTranslatef(x - 16, y + 10, 6);
+    glutSolidSphere(2, 20, 10);
+    glPopMatrix();
+
+    //right cheek
+    glColor3f(1, 0.6, 0.7);
+    glPushMatrix();
+    glTranslatef(x + 10, y + 10, 6);
+    glutSolidSphere(2, 20, 10);
+    glPopMatrix();
+
+    //Draw the legs
+    glColor3f(0, 0, 0); // black color
+    glLineWidth(7.0f);
+    glBegin(GL_LINES);
+    // glScaled(z, z, z);
+    glVertex2f(x - 7, y - 24); //left leg
+    glVertex2f(x - 7, y - 35);
+
+    glVertex2f(x + 7, y - 23); //right leg
+    glVertex2f(x + 7, y - 37);
+    glEnd();
+
+
+    //Draw the arms
+    glPushMatrix();
+    glLineWidth(7.0f);
+    glBegin(GL_LINES);
+    glVertex2f(x - 25, y); //left arm
+    glVertex2f(x - 40, y - 10);
+
+    glVertex2f(x + 22, y); //right arm
+    glVertex2f(x + 40, y - 10);
+
+    glEnd();
+
+    glPopMatrix();
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    //Draw the Shoes
+    glPushMatrix();
+    glColor3f(1, 1, 1); //white color
+    glTranslatef(x - 8, y - 35, 6);
+    glutSolidSphere(3, 18, 15);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(1, 1, 1);//white color
+    glTranslatef(x + 4, y - 35, 6);
+    glutSolidSphere(3, 18, 15);
+    glPopMatrix();
+
+
+
+    //--------------------------------------------------
+
+    //Draw the glasses
+    //left lens
+    glPushMatrix();
+    glColor3f(0, 1, 1);
+    glTranslated(-9.5, 15, 0);
+    glScaled(0.3, 0.3, 0.35);
+    glutSolidTorus(1, 20, 30, 30);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0, 1, 1);
+    glTranslated(4, 15, 0);
+    glScaled(0.3, 0.3, 0.35);
+    glutSolidTorus(1.5, 20, 30, 30);
+    glPopMatrix();
+
+    //right lens
+    glPushMatrix();
+    glColor3f(0, 1, 1);
+    glBegin(GL_LINES);
+    glVertex2d(x + 9.5, y + 14);
+    glVertex2d(x + 20, y + 17);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0, 1, 1);
+    glBegin(GL_LINES);
+    glVertex2d(x - 15, y + 14);
+    glVertex2d(x - 25, y + 17);
+    glEnd();
+    glPopMatrix();
+
+
+
+
+    //Set the animation on the whole object
+    if (var2 > 10)
+        var2 = 0;
+    else
+        var2 += 0.01;
+
+    glPopMatrix();
+
+    glutSwapBuffers(); // Swap the buffers to display the new scene
+
+}
+
+void main() {
+
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(600, 600);
+    glutInitWindowPosition(100, 100);
+
+    glutCreateWindow("project CG");
+    glClearColor(0.9, 0.9, 0.9, 0.5);
+
+    glMatrixMode(GL_PROJECTION);
+    gluPerspective(45, 1, 1, 1000); // Set the perspective view
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    gluLookAt(0, 0, 100, 0, 0, 0, 0, 1, 0); // Set the camera position
+
+    glutDisplayFunc(display);
+
+    glutIdleFunc(display);
+
+    glutMainLoop();
+
+
+}
